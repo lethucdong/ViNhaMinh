@@ -1,0 +1,170 @@
+// Cấu hình Database
+datasource db {
+  provider = "postgresql" // Có thể đổi thành "mysql", "sqlite", "mongodb", v.v.
+  url      = env("DATABASE_URL")
+}
+
+// Cấu hình Prisma Client
+generator client {
+  provider = "prisma-client-js"
+}
+
+// --- ENUMS (Phân loại dữ liệu cố định) ---
+
+// Loại giao dịch
+enum TransactionType {
+  INCOME
+  EXPENSE
+  TRANSFER
+  DEBT_REPAYMENT
+}
+
+// Vai trò trong Ví Chung
+enum MemberRole {
+  ADMIN
+  MEMBER
+}
+
+// Trạng thái Hồ sơ Nợ
+enum DebtStatus {
+  ACTIVE
+  COMPLETED
+  CANCELED
+}
+
+// Trạng thái Lời mời
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+
+// --- BẢNG CƠ SỞ (MODELS) ---
+
+model User {
+  id                 Int      @id @default(autoincrement())
+  email              String   @unique
+  phone_number       String   @unique // Bắt buộc và Duy nhất
+  password_hash      String
+  name               String
+  created_at         DateTime @default(now())
+
+  // Tính năng Quên Mật khẩu
+  reset_token        String?
+  reset_token_expiry DateTime?
+
+  // Mối quan hệ
+  owned_wallets      Wallet[]  @relation("OwnedWallets") // Ví cá nhân hoặc ví chung do user tạo
+  member_of          WalletMember[] // Các ví chung mà user là thành viên
+  transactions       Transaction[] @relation("CreatedTransactions") // Các giao dịch user đã tạo
+  debt_records       DebtRecord[] // Hồ sơ nợ của user
+  sent_invitations   Invitation[]  @relation("SentInvitations") // Lời mời đã gửi
+
+  @@map("users") // Đặt tên bảng trong database
+}
+
+model Wallet {
+  id           Int      @id @default(autoincrement())
+  name         String
+  balance      Decimal  @default(0)
+  currency     String   @default("VND")
+  is_shared    Boolean  @default(false)
+  
+  // Khóa ngoại
+  owner_id     Int
+  owner        User     @relation("OwnedWallets", fields: [owner_id], references: [id])
+
+  // Mối quan hệ
+  members      WalletMember[] // Thành viên của ví (chỉ áp dụng cho ví chung)
+  transactions Transaction[] // Các giao dịch phát sinh trong ví
+  invitations  Invitation[] // Lời mời liên quan đến ví
+
+  @@map("wallets")
+}
+
+model WalletMember {
+  id          Int        @id @default(autoincrement())
+  role        MemberRole @default(MEMBER)
+
+  // Khóa ngoại
+  wallet_id   Int
+  wallet      Wallet     @relation(fields: [wallet_id], references: [id])
+  
+  user_id     Int
+  user        User       @relation(fields: [user_id], references: [id])
+
+  @@unique([wallet_id, user_id]) // Đảm bảo 1 user chỉ là thành viên 1 lần trong 1 ví
+  @@map("wallet_members")
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String
+  type        String // Có thể dùng Enum, nhưng String linh hoạt hơn cho custom type (INCOME/EXPENSE)
+  is_custom   Boolean  @default(false)
+
+  // Mối quan hệ
+  transactions Transaction[]
+
+  @@map("categories")
+}
+
+model Transaction {
+  id                 Int               @id @default(autoincrement())
+  type               TransactionType
+  amount             Decimal
+  description        String?
+  transaction_date   DateTime          @default(now())
+
+  // Khóa ngoại
+  wallet_id          Int
+  wallet             Wallet            @relation(fields: [wallet_id], references: [id])
+
+  category_id        Int
+  category           Category          @relation(fields: [category_id], references: [id])
+
+  created_by_user_id Int
+  created_by         User              @relation("CreatedTransactions", fields: [created_by_user_id], references: [id])
+
+  // Liên kết với Sổ Nợ (Optional)
+  debt_record_id     Int?
+  debt_record        DebtRecord?       @relation(fields: [debt_record_id], references: [id])
+
+  @@map("transactions")
+}
+
+model DebtRecord {
+  id               Int          @id @default(autoincrement())
+  debt_type        String       // Dùng String thay vì Enum để linh hoạt (LENT/BORROWED)
+  principal_amount Decimal
+  paid_amount      Decimal      @default(0) // Số tiền đã trả/thu
+  contact_name     String
+  due_date         DateTime?
+  status           DebtStatus   @default(ACTIVE)
+
+  // Khóa ngoại
+  user_id          Int
+  user             User         @relation(fields: [user_id], references: [id])
+
+  // Mối quan hệ
+  transactions     Transaction[] // Các giao dịch tiền mặt liên quan đến khoản nợ này
+
+  @@map("debt_records")
+}
+
+model Invitation {
+  id                 Int                @id @default(autoincrement())
+  invited_email      String
+  status             InvitationStatus   @default(PENDING)
+  expires_at         DateTime
+
+  // Khóa ngoại
+  wallet_id          Int
+  wallet             Wallet             @relation(fields: [wallet_id], references: [id])
+  
+  invited_by_user_id Int
+  invited_by         User               @relation("SentInvitations", fields: [invited_by_user_id], references: [id])
+
+  @@map("invitations")
+}

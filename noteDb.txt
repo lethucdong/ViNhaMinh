@@ -1,0 +1,86 @@
+1. Bảng User (Người dùng) - Bảng quản lý thông tin đăng nhập và hồ sơ người dùng, hỗ trợ đăng ký thủ công và đặt lại mật khẩu.
+
+Trường (Field),Kiểu dữ liệu,Mô tả,Yêu cầu
+id,UUID/Int,Khóa chính.,Bắt buộc
+email,String (Unique),Email đăng ký (dùng cho Login).,Bắt buộc
+phone_number,String (Unique),Số điện thoại của người dùng.,"Bắt buộc, Duy nhất"
+password_hash,String,Mật khẩu đã mã hóa (Bcrypt).,Bắt buộc
+name,String,Tên hiển thị.,Bắt buộc
+created_at,DateTime,Thời điểm tạo tài khoản.,Bắt buộc
+reset_token,String (Optional),Token đặt lại mật khẩu.,Tùy chọn
+reset_token_expiry,DateTime (Optional),Thời gian Token hết hạn.,Tùy chọn
+
+===============================================================================================================================
+2. Bảng Wallet (Ví) - Bảng quản lý cả Ví Cá nhân (Private) và Ví Chung (Shared).
+
+Trường (Field),Kiểu dữ liệu,Mô tả
+id,UUID/Int,Khóa chính.
+name,String,"Tên ví (ví dụ: ""Tiền mặt"", ""Quỹ Du lịch"")."
+balance,Decimal,Số dư hiện tại của ví (cập nhật sau mỗi giao dịch).
+currency,String,"Loại tiền tệ (ví dụ: VND, USD)."
+is_shared,Boolean,"TRUE nếu là ví chung, FALSE nếu là ví cá nhân."
+owner_id,UUID/Int,(FK) Khóa ngoại đến User.id (Chủ sở hữu/Người tạo ví).
+
+===============================================================================================================================
+3. Bảng WalletMember (Thành viên Ví Chung) - Quản lý mối quan hệ Nhiều-Nhiều giữa User và Shared Wallet, chỉ áp dụng khi Wallet.is_shared = TRUE.
+
+Trường (Field),Kiểu dữ liệu,Mô tả
+id,UUID/Int,Khóa chính.
+wallet_id,UUID/Int,(FK) Khóa ngoại đến Wallet.id.
+user_id,UUID/Int,(FK) Khóa ngoại đến User.id (Thành viên ví).
+role,Enum/String,"Vai trò trong ví ('ADMIN', 'MEMBER')."
+
+===============================================================================================================================
+4. Bảng Transaction (Giao dịch) - Bảng cốt lõi ghi lại mọi hoạt động Thu/Chi/Chuyển khoản.
+
+Trường (Field),Kiểu dữ liệu,Mô tả
+id,UUID/Int,Khóa chính.
+wallet_id,UUID/Int,(FK) Khóa ngoại đến Wallet.id (Ví bị ảnh hưởng).
+type,Enum/String,"Loại giao dịch: INCOME, EXPENSE, TRANSFER, DEBT_REPAYMENT."
+amount,Decimal,Số tiền giao dịch (luôn là số dương).
+description,String,Mô tả giao dịch.
+transaction_date,DateTime,Ngày thực hiện giao dịch (Quan trọng cho báo cáo hàng tháng).
+category_id,UUID/Int,(FK) Khóa ngoại đến Category.id.
+created_by_user_id,UUID/Int,(FK) Khóa ngoại đến User.id (Ai là người tạo giao dịch này).
+debt_record_id,UUID/Int (Optional),(FK) Khóa ngoại đến DebtRecord.id (Nếu đây là giao dịch tiền mặt liên quan đến Nợ).
+
+===============================================================================================================================
+5. Bảng Category (Danh mục)
+
+Trường (Field),Kiểu dữ liệu,Mô tả
+id,UUID/Int,Khóa chính.
+name,String,"Tên danh mục (ví dụ: ""Ăn uống"", ""Lương"")."
+type,Enum/String,Phân loại: INCOME hoặc EXPENSE.
+is_custom,Boolean,TRUE nếu là danh mục người dùng tự tạo.
+
+===============================================================================================================================
+6. Bảng DebtRecord (Hồ sơ Nợ) - Quản lý thông tin nợ gốc và trạng thái, tách biệt với giao dịch tiền mặt (được liên kết qua Transaction.debt_record_id).
+
+Trường (Field),Kiểu dữ liệu,Mô tả
+id,UUID/Int,Khóa chính.
+debt_type,Enum/String,Loại: LENT (Cho vay) hoặc BORROWED (Đi vay).
+principal_amount,Decimal,Số tiền gốc ban đầu.
+paid_amount,Decimal,Tổng số tiền đã thanh toán/hoàn trả (Được tính từ các Transaction liên kết).
+contact_name,String,Tên người vay/người cho vay.
+due_date,DateTime (Optional),Ngày đáo hạn.
+user_id,UUID/Int,(FK) Khóa ngoại đến User.id (Chủ sở hữu hồ sơ nợ này).
+status,Enum/String,"ACTIVE, COMPLETED, CANCELED."
+
+===============================================================================================================================
+7. Bảng Invitation (Lời mời) - Quản lý lời mời tham gia Ví Chung.
+
+Trường (Field),Kiểu dữ liệu,Mô tả
+id,UUID/Int,Khóa chính.
+wallet_id,UUID/Int,(FK) Khóa ngoại đến Wallet.id (Ví được mời).
+invited_email,String,Email của người được mời.
+invited_by_user_id,UUID/Int,(FK) Khóa ngoại đến User.id (Người gửi lời mời).
+status,Enum/String,"PENDING, ACCEPTED, REJECTED."
+expires_at,DateTime,Thời điểm lời mời hết hạn.
+
+===============================================================================================================================
+
+
+===============================================================================================================================
+
+
+===============================================================================================================================

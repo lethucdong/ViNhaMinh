@@ -1,0 +1,187 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "an.nguyen@example.com",
+      "phone_number": "0901112233",
+      "password_hash": "$2a$10$HASHED_PASS_A",
+      "name": "An Nguyễn",
+      "created_at": "2025-10-01T08:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "email": "binh.tran@example.com",
+      "phone_number": "0904445566",
+      "password_hash": "$2a$10$HASHED_PASS_B",
+      "name": "Bình Trần",
+      "created_at": "2025-10-01T08:05:00.000Z"
+    },
+    {
+      "id": 3,
+      "email": "cuong.le@example.com",
+      "phone_number": "0907778899",
+      "password_hash": "$2a$10$HASHED_PASS_C",
+      "name": "Cường Lê",
+      "created_at": "2025-10-01T08:10:00.000Z"
+    }
+  ],
+  "wallets": [
+    {
+      "id": 101,
+      "name": "Tài Khoản Cá Nhân (An)",
+      "balance": 5000000.00,
+      "currency": "VND",
+      "is_shared": false,
+      "owner_id": 1
+    },
+    {
+      "id": 102,
+      "name": "Tiền Mặt (Bình)",
+      "balance": 2000000.00,
+      "currency": "VND",
+      "is_shared": false,
+      "owner_id": 2
+    },
+    {
+      "id": 103,
+      "name": "Quỹ Sinh Hoạt Chung",
+      "balance": 15000000.00,
+      "currency": "VND",
+      "is_shared": true,
+      "owner_id": 1
+    },
+    {
+      "id": 104,
+      "name": "Quỹ Du Lịch 2026",
+      "balance": 0.00,
+      "currency": "VND",
+      "is_shared": true,
+      "owner_id": 3
+    }
+  ],
+  "wallet_members": [
+    {"id": 201, "wallet_id": 103, "user_id": 1, "role": "ADMIN"},
+    {"id": 202, "wallet_id": 103, "user_id": 2, "role": "MEMBER"},
+    {"id": 203, "wallet_id": 103, "user_id": 3, "role": "MEMBER"},
+    {"id": 204, "wallet_id": 104, "user_id": 3, "role": "ADMIN"},
+    {"id": 205, "wallet_id": 104, "user_id": 1, "role": "MEMBER"}
+  ],
+  "categories": [
+    {"id": 301, "name": "Lương", "type": "INCOME", "is_custom": false},
+    {"id": 302, "name": "Ăn uống", "type": "EXPENSE", "is_custom": false},
+    {"id": 303, "name": "Thuê nhà", "type": "EXPENSE", "is_custom": false},
+    {"id": 304, "name": "Vay/Trả Nợ", "type": "EXPENSE", "is_custom": false},
+    {"id": 305, "name": "Giải trí", "type": "EXPENSE", "is_custom": true}
+  ],
+  "debt_records": [
+    {
+      "id": 401,
+      "user_id": 1,
+      "debt_type": "LENT",
+      "principal_amount": 3000000.00,
+      "paid_amount": 1000000.00,
+      "contact_name": "Anh Tuấn",
+      "due_date": "2026-01-15T00:00:00.000Z",
+      "status": "ACTIVE"
+    },
+    {
+      "id": 402,
+      "user_id": 2,
+      "debt_type": "BORROWED",
+      "principal_amount": 5000000.00,
+      "paid_amount": 0.00,
+      "contact_name": "Chị Mai",
+      "due_date": "2025-12-30T00:00:00.000Z",
+      "status": "ACTIVE"
+    }
+  ],
+  "transactions": [
+    {
+      "id": 501,
+      "wallet_id": 101,
+      "type": "INCOME",
+      "amount": 30000000.00,
+      "description": "Lương tháng 11",
+      "transaction_date": "2025-11-01T09:00:00.000Z",
+      "category_id": 301,
+      "created_by_user_id": 1,
+      "debt_record_id": null
+    },
+    {
+      "id": 502,
+      "wallet_id": 101,
+      "type": "EXPENSE",
+      "amount": 10000000.00,
+      "description": "Thuê nhà tháng 11",
+      "transaction_date": "2025-11-05T10:00:00.000Z",
+      "category_id": 303,
+      "created_by_user_id": 1,
+      "debt_record_id": null
+    },
+    {
+      "id": 503,
+      "wallet_id": 102,
+      "type": "EXPENSE",
+      "amount": 500000.00,
+      "description": "Cà phê sáng",
+      "transaction_date": "2025-12-01T07:30:00.000Z",
+      "category_id": 302,
+      "created_by_user_id": 2,
+      "debt_record_id": null
+    },
+    {
+      "id": 504,
+      "wallet_id": 103,
+      "type": "EXPENSE",
+      "amount": 2000000.00,
+      "description": "Mua sắm siêu thị chung",
+      "transaction_date": "2025-12-02T15:00:00.000Z",
+      "category_id": 302,
+      "created_by_user_id": 3,
+      "debt_record_id": null
+    },
+    {
+      "id": 505,
+      "wallet_id": 101,
+      "type": "EXPENSE",
+      "amount": 3000000.00,
+      "description": "Tiền mặt cho Anh Tuấn vay (Nợ gốc)",
+      "transaction_date": "2025-12-05T12:00:00.000Z",
+      "category_id": 304,
+      "created_by_user_id": 1,
+      "debt_record_id": 401
+    },
+    {
+      "id": 506,
+      "wallet_id": 103,
+      "type": "EXPENSE",
+      "amount": 1000000.00,
+      "description": "Chi phí giải trí nhóm",
+      "transaction_date": "2025-12-08T20:00:00.000Z",
+      "category_id": 305,
+      "created_by_user_id": 1,
+      "debt_record_id": null
+    },
+    {
+      "id": 507,
+      "wallet_id": 101,
+      "type": "INCOME",
+      "amount": 1000000.00,
+      "description": "Anh Tuấn hoàn trả nợ lần 1",
+      "transaction_date": "2025-12-10T11:00:00.000Z",
+      "category_id": 304,
+      "created_by_user_id": 1,
+      "debt_record_id": 401
+    }
+  ],
+  "invitations": [
+    {
+      "id": 601,
+      "wallet_id": 104,
+      "invited_email": "daichinh@example.com",
+      "invited_by_user_id": 3,
+      "status": "PENDING",
+      "expires_at": "2025-12-18T00:00:00.000Z"
+    }
+  ]
+}
