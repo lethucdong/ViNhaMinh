@@ -50,6 +50,8 @@ export const formatFullCurrency = (amount: number, currency: string = 'VNĐ') =>
   }).format(amount);
 };
 
+
+
 // Hàm format tiền tệ gọn gàng cho biểu đồ hoặc thẻ tóm tắt (Ví dụ: 25.5 Tỷ)
 export const formatCurrency = (amount: number) => {
   if (Math.abs(amount) >= 1_000_000_000) {

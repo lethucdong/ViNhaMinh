@@ -1,15 +1,19 @@
+// dashboard/page.tsx (Hoặc DashboardPage.tsx)
 "use client";
 import MainLayout from '@/components/shared/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+// Cần đảm bảo đường dẫn này đúng
+import { TransactionForm } from '@/components/forms/TransactionForm';
+
+// Giữ nguyên các imports khác
 import { MOCK_DATA, formatFullCurrency, formatCurrency } from '@/data/mock_data';
 import { Wallet, Plus, TrendingUp, TrendingDown, Clock, ArrowUp, ArrowDown } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { useState } from 'react';
-import { TransactionForm } from '@/components/forms/TransactionForm';
 import { useRouter } from 'next/navigation';
 
-// Hàm tính toán an toàn hơn (Giữ nguyên)
+// === CÁC HÀM TÍNH TOÁN (Giữ nguyên) ===
 const getTotalBalance = () => {
   if (!MOCK_DATA || !MOCK_DATA.wallets || !Array.isArray(MOCK_DATA.wallets)) return 0;
   return MOCK_DATA.wallets.reduce((sum, w) => sum + (typeof w.balance === 'number' ? w.balance : 0), 0);
@@ -54,6 +58,9 @@ const formatSummaryCurrency = (amount: number) => {
   return formatFullCurrency(amount);
 };
 
+
+// === COMPONENT CHÍNH: DashboardPage ===
+
 export default function DashboardPage() {
   const [isTransactionFormOpen, setIsTransactionFormOpen] = useState(false);
   const router = useRouter();
@@ -70,19 +77,21 @@ export default function DashboardPage() {
     router.push('/wallets');
   };
 
+  const handleSaveTransaction = (data: any) => {
+    console.log("Lưu Giao Dịch Thực Tế (API Placeholder):", data);
+    // TODO: Gọi API để lưu giao dịch và refresh dữ liệu Dashboard
+  };
+
   return (
     <MainLayout>
 
-      {/* ======================================================= */}
-      {/* NÚT THÊM GIAO DỊCH CỐ ĐỊNH (SỬA LỖI CLASS TAILWIND) */}
-      {/* ======================================================= */}
+      {/* NÚT THÊM GIAO DỊCH CỐ ĐỊNH */}
       <div
         className="fixed bottom-[100px] right-4 z-[10] md:top-[95px] md:right-6 md:z-[50] h-fit">
         <div className="inline-block animate-pulse-heart">
           <Button
             onClick={() => setIsTransactionFormOpen(true)}
             size="lg"
-            // Giữ nguyên style gradient và animation tùy chỉnh của bạn
             className="text-white font-bold rounded-xl shadow-2xl shadow-indigo-600/70 dark:shadow-indigo-900/50 px-6 py-3 hover:scale-105 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 animate-glow cursor-pointer"
           >
             <Plus className="w-5 h-5 mr-3" /> Thêm Giao Dịch Nhanh
@@ -93,7 +102,6 @@ export default function DashboardPage() {
 
       <div className="space-y-8">
         <div className="flex justify-between items-center">
-          {/* CHUẨN HÓA TIÊU ĐỀ H1 SANG MÀU INDIGO (PHONG CÁCH CHUNG) */}
           <h1 className="text-4xl font-extrabold tracking-tight text-indigo-700 dark:text-indigo-400">
             Tổng quan tài chính
           </h1>
@@ -101,7 +109,7 @@ export default function DashboardPage() {
 
         {/* Row 1: Tổng số dư và Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Card Tổng tài sản: Dùng màu Indigo làm màu chủ đạo cho Card nổi bật */}
+          {/* Card Tổng tài sản */}
           <Card className="col-span-1 lg:col-span-2 bg-indigo-700 text-white dark:bg-indigo-900 shadow-2xl shadow-indigo-600/40 dark:shadow-indigo-900/50 transition-all duration-300 rounded-xl hover:shadow-indigo-600/60">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-lg font-medium opacity-90">TỔNG TÀI SẢN HIỆN TẠI</CardTitle>
@@ -179,8 +187,8 @@ export default function DashboardPage() {
                   key={wallet.id}
                   onClick={() => handleWalletClick(`${wallet.id}`)}
                   className="flex items-center justify-between p-4 rounded-xl border border-border/70 
-                                               bg-secondary/30 hover:bg-secondary/80 transition-all duration-300 cursor-pointer 
-                                               transform hover:scale-[1.03] shadow-sm active:scale-[0.98]">
+                                               bg-secondary/30 hover:bg-secondary/80 transition-all duration-300 cursor-pointer 
+                                               transform hover:scale-[1.03] shadow-sm active:scale-[0.98]">
                   <div className="flex items-center space-x-3">
                     <Wallet className="w-6 h-6 text-indigo-500" />
                     <div>
@@ -205,7 +213,12 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <TransactionForm open={isTransactionFormOpen} onOpenChange={setIsTransactionFormOpen} />
+      {/* Tích hợp TransactionForm đã được import */}
+      <TransactionForm
+        open={isTransactionFormOpen}
+        onOpenChange={setIsTransactionFormOpen}
+        onSave={handleSaveTransaction}
+      />
     </MainLayout>
   );
 }
