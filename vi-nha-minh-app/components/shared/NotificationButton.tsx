@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import React from 'react';
+import { useRouter } from 'next/navigation';
 
 // Dữ liệu mẫu (mock data) được tích hợp trong component
 const mockNotifications = [
@@ -23,10 +24,12 @@ const mockNotifications = [
 
 const NotificationButton: React.FC = () => {
   const unreadCount = mockNotifications.length;
+  const router = useRouter();
 
   // Hàm giả định xử lý khi click vào "Xem tất cả" hoặc một thông báo
   const handleViewAll = () => {
-    // Thay thế bằng logic điều hướng tới trang /dashboard/notifications
+    router.push('/messages');
+    // Thay thế bằng logic điều hướng tới trang /notifications
     console.log("Điều hướng tới trang Thông báo chi tiết");
   };
 

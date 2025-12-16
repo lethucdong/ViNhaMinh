@@ -9,7 +9,6 @@ const navItems = [
   { href: '/wallets', label: 'Quản Lý Ví', icon: Wallet },
   { href: '/transactions', label: 'Giao Dịch', icon: Repeat2 },
   { href: '/debt', label: 'Sổ Nợ', icon: PiggyBank },
-  { href: '/groups', label: 'Ví Cộng Tác', icon: Users },
 ];
 
 export function Sidebar() {

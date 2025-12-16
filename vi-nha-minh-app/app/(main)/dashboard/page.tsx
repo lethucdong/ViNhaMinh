@@ -63,11 +63,11 @@ export default function DashboardPage() {
   const topWallets = wallets.sort((a, b) => (b.balance || 0) - (a.balance || 0)).slice(0, 3);
 
   const handleWalletClick = (walletId: string) => {
-    router.push(`/dashboard/wallets/${walletId}`);
+    router.push(`/wallets/${walletId}`);
   };
 
   const handleManageAllWallets = () => {
-    router.push('/dashboard/wallets');
+    router.push('/wallets');
   };
 
   return (
@@ -77,7 +77,7 @@ export default function DashboardPage() {
       {/* NÚT THÊM GIAO DỊCH CỐ ĐỊNH (SỬA LỖI CLASS TAILWIND) */}
       {/* ======================================================= */}
       <div
-        className="fixed bottom-16 right-4 z-[10] md:top-[95px] md:right-6 md:z-[50] h-fit">
+        className="fixed bottom-[100px] right-4 z-[10] md:top-[95px] md:right-6 md:z-[50] h-fit">
         <div className="inline-block animate-pulse-heart">
           <Button
             onClick={() => setIsTransactionFormOpen(true)}

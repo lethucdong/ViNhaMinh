@@ -29,7 +29,7 @@ export default function DebtPage() {
   return (
     <MainLayout>
       <div
-        className="fixed bottom-16 right-4 z-[10] md:top-[95px] md:right-6 md:z-[50] h-fit">
+        className="fixed bottom-[100px] right-4 z-[10] md:top-[95px] md:right-6 md:z-[50] h-fit">
         <div className="inline-block animate-pulse-heart">
           <Button
             // onClick={() => setIsTransactionFormOpen(true)}

@@ -26,7 +26,7 @@ export default function WalletPage() {
   const wallets = (MOCK_DATA && MOCK_DATA.wallets) || [];
 
   const handleWalletClick = (walletId: string) => {
-    router.push(`/dashboard/wallets/${walletId}`);
+    router.push(`/wallets/${walletId}`);
   };
 
   const handleAddWallet = () => {
@@ -38,7 +38,7 @@ export default function WalletPage() {
   return (
     <MainLayout>
       <div
-        className="fixed bottom-16 right-4 z-[10] md:top-[95px] md:right-6 md:z-[50] h-fit">
+        className="fixed bottom-[100px] right-4 z-[10] md:top-[95px] md:right-6 md:z-[50] h-fit">
         <div className="inline-block animate-pulse-heart">
           <Button
             onClick={handleAddWallet}
@@ -53,7 +53,7 @@ export default function WalletPage() {
 
       <div className="space-y-8">
         <div className="flex justify-between items-center">
-          <PageTitle title="Quản lý Ví Cá Nhân" />
+          <PageTitle title="Quản lý Ví" />
 
           {/* NÚT THÊM VÍ MỚI (ĐÃ CHUẨN HÓA VỚI NÚT GIAO DỊCH NHANH) */}
           {/* <Button
@@ -116,7 +116,7 @@ export default function WalletPage() {
             <div
               key={wallet.id}
               onClick={() => handleWalletClick(`${wallet.id}`)}
-              className="p-5 rounded-xl border border-border/70 
+              className="flex flex-col justify-between p-5 rounded-xl border border-border/70 
                                        bg-card hover:bg-secondary/50 transition-all duration-300 cursor-pointer 
                                        transform hover:scale-[1.03] shadow-md hover:shadow-lg">
               <div className="flex items-start justify-between">
@@ -128,7 +128,7 @@ export default function WalletPage() {
                 </div>
                 <Wallet className="w-6 h-6 text-indigo-500" />
               </div>
-              <div className="text-3xl font-extrabold mt-4">
+              <div className="sm:text-3xl md:text-2xl font-extrabold mt-4">
                 {formatFullCurrency(wallet.balance)}
               </div>
             </div>

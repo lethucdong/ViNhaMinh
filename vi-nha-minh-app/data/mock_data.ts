@@ -43,26 +43,55 @@ export const MOCK_DATA = {
 
 // Hàm format tiền tệ đầy đủ (sử dụng khi cần độ chính xác cao)
 export const formatFullCurrency = (amount: number, currency: string = 'VNĐ') => {
-    return new Intl.NumberFormat('vi-VN', {
-        style: 'currency',
-        currency: 'VND',
-        minimumFractionDigits: 0,
-    }).format(amount);
+  return new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
+    minimumFractionDigits: 0,
+  }).format(amount);
 };
 
 // Hàm format tiền tệ gọn gàng cho biểu đồ hoặc thẻ tóm tắt (Ví dụ: 25.5 Tỷ)
 export const formatCurrency = (amount: number) => {
-    if (Math.abs(amount) >= 1_000_000_000) {
-        // Tỷ
-        const value = amount / 1_000_000_000;
-        return `${value.toFixed(1)} Tỷ`;
-    }
-    if (Math.abs(amount) >= 1_000_000) {
-        // Triệu
-        const value = amount / 1_000_000;
-        return `${value.toFixed(1)} Tr`;
-    }
-    return amount.toFixed(0);
+  if (Math.abs(amount) >= 1_000_000_000) {
+    // Tỷ
+    const value = amount / 1_000_000_000;
+    return `${value.toFixed(1)} Tỷ`;
+  }
+  if (Math.abs(amount) >= 1_000_000) {
+    // Triệu
+    const value = amount / 1_000_000;
+    return `${value.toFixed(1)} Tr`;
+  }
+  return amount.toFixed(0);
 };
 // Xuất riêng MOCK_CHART_DATA (dù đã có trong MOCK_DATA) để tương thích nếu các file khác cố gắng import biến này
 export const MOCK_CHART_DATA = MOCK_DATA.chart_data;
+
+// Giả định bạn đã có file mock_data.ts
+export const MOCK_MESSAGES = [
+  {
+    id: 1,
+    sender: 'Bình Trần (Nhóm)',
+    subject: 'Về khoản nợ tháng 12',
+    snippet: 'Đã hoàn tất 50% số nợ gốc...',
+    time: '5:15 PM',
+    unread: 3,
+    avatar: 'BT',
+    messages: [
+      { id: 101, content: "Đã chuyển tiền trả nợ tháng này rồi nhé.", time: "4:00 PM", fromMe: true },
+      { id: 102, content: "Ok. Tôi đã ghi nhận 500k. Còn 500k nữa.", time: "4:05 PM", fromMe: false },
+      { id: 103, content: "Tôi sẽ chuyển nốt vào cuối tuần này. Cảm ơn.", time: "5:15 PM", fromMe: true },
+    ]
+  },
+  {
+    id: 2,
+    sender: 'Hệ thống FinTrack',
+    subject: 'Cảnh báo Ngân sách',
+    snippet: 'Bạn đã đạt 90% ngân sách chi tiêu tháng 12...',
+    time: 'Hôm nay',
+    unread: 1,
+    avatar: 'FT',
+    messages: [{ id: 201, content: "Bạn đã đạt 90% ngân sách chi tiêu tháng 12, nên cân nhắc các giao dịch tiếp theo.", time: "10:30 AM", fromMe: false }]
+  },
+  // ... thêm dữ liệu khác
+];
